@@ -4,13 +4,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.BasicFileAttributes;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,18 +42,52 @@ public class FileCluster {
 
     public void writeFiles(boolean dryRun) throws IOException {
         String sourceDir = "src/main/java";
-        String destDir = "src/main/temp";
+
+        Path destPath = Files.createTempDirectory(Paths.get("src/main"), "auto-cluster-maven-plugin");
+        String destDir = "src/main/" + destPath.getFileName();
+
         writeTree(tree, sourceDir, destDir, -1);
+
         if (!dryRun) {
-            // Overwrite source with dest
+            // Delete all java files and empty directories from source
             Files.walk(Paths.get(sourceDir))
                 .sorted(Comparator.reverseOrder())
                 .map(Path::toFile)
-                .forEach(File::delete);
+                .forEach((f) -> {
+                    if (f.getName().endsWith(".java")) {
+                        f.delete();
+                    }});
 
-            Files.move(Paths.get(destDir), Paths.get(sourceDir), StandardCopyOption.REPLACE_EXISTING);
+            // Move new structure over
+            moveFolder(destPath, Paths.get(sourceDir), StandardCopyOption.REPLACE_EXISTING);
+
+            // Delete temp folder
+            Files.walk(destPath)
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
         }
     }
+
+    public void moveFolder(Path source, Path target, CopyOption... options) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                    throws IOException {
+                Files.createDirectories(target.resolve(source.relativize(dir)));
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                    throws IOException {
+                Files.move(file, target.resolve(source.relativize(file)), options);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
 
     private void writeTree(BinaryTree tree, String sourceDirectory, String destDirectory, int lastValue) throws IOException {
         if (tree.name != null) {

@@ -59,9 +59,9 @@ public class ClusterGraph extends AbstractMojo {
             DistanceMatrix dists = DistanceMatrix.fromDependencyMatrix(deps);
             Hclust hClust = Hclust.fromDistanceMatrix(dists);
             FileCluster fileClust = FileCluster.fromHclust(hClust);
-            fileClust.writeFiles();
+            fileClust.writeFiles(false);
         } catch (Exception e) {
-            throw new MojoFailureException("Could not generate output file", e);
+            throw new MojoFailureException("Error in clustering", e);
         }
     }
 }
