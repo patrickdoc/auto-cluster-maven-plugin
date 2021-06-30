@@ -1,0 +1,7 @@
+digraph {
+size="10.5,8.0";
+"a"[shape=box,style=filled,fillcolor="#fff2b6",label=<<table border='0' cellborder='0' cellspacing='1'><tr><td><font point-size='12'>public class</font></td></tr><tr><td><font point-size='14'><b>io.github.classgraph</b></font></td></tr><tr><td><font point-size='20'><b>ClassGraph</b></font></td></tr></table>>];
+
+  "b" -> "c"
+  "b" -> "a"
+}
