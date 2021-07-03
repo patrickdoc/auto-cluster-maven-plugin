@@ -119,10 +119,10 @@ public class FileCluster {
                 .collect(Collectors.toList());
 
             if (sources.size() == 0) {
-                System.out.println("Warn: Could not find source for: " + classFileName);
+                // Could not find source file for, e.g. a generated source file
                 return;
             } else if (sources.size() > 1) {
-                System.out.println("Warn: Duplicate source found for: " + classFileName);
+                // More than one source file found with same package/name
                 return;
             }
 

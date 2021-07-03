@@ -35,9 +35,9 @@ public class ClusterGraph extends AbstractMojo {
 
     public void execute() throws MojoFailureException {
         try {
-            getLog().info("Generating dependency dot file from packages:");
+            getLog().debug("Generating dependency dot file from packages:");
             for (String s : basePackages) {
-                getLog().info("- " + s);
+                getLog().debug("- " + s);
             }
 
             ClassGraph graph = new ClassGraph();
@@ -64,7 +64,7 @@ public class ClusterGraph extends AbstractMojo {
             FileCluster fileClust = FileCluster.fromHclust(hClust);
             fileClust.writeFiles(dryRun);
         } catch (Exception e) {
-            throw new MojoFailureException("Error in clustering", e);
+            throw new MojoFailureException("Error in clustering");
         }
     }
 }
