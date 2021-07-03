@@ -62,6 +62,11 @@ public class DependencyMatrix {
             line = reader.readLine();
         }
 
+        // Set all nodes to depend on themselves
+        for (int i = 0; i < result.nodeIds.size(); i++) {
+            result.dependencies[i][i] = 1;
+        }
+
         return result;
     }
 }

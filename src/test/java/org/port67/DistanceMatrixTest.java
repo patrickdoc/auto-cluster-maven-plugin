@@ -22,16 +22,16 @@ public class DistanceMatrixTest {
         matrix.nodeIds = nodeIds;
 
         int[][] dependencies = new int[][]
-            {{0, 0, 0}
-            ,{1, 0, 1}
-            ,{0, 0, 0}};
+            {{1, 0, 0}
+            ,{1, 1, 1}
+            ,{0, 0, 1}};
         matrix.dependencies = dependencies;
 
         DistanceMatrix dist = DistanceMatrix.fromDependencyMatrix(matrix);
         int[][] expected = new int[][]
-            {{0, 2, 0}
+            {{0, 2, 2}
             ,{2, 0, 2}
-            ,{0, 2, 0}};
+            ,{2, 2, 0}};
         logMatrix(dist);
         assertTrue(Arrays.deepEquals(expected, dist.distances));
     }
