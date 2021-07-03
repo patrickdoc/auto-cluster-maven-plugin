@@ -7,8 +7,36 @@
   <artifactId>auto-cluster-maven-plugin</artifactId>
   <version>0.0.1</version>
   <packaging>maven-plugin</packaging>
-
   <name>Auto Cluster Maven Plugin</name>
+
+  <description>Hierarchical clustering of Java source files based on dependencies</description>
+
+  <url>https://github.com/patrickdoc/auto-cluster-maven-plugin</url>
+
+  <licenses>
+    <license>
+      <name>The MIT License (MIT)</name>
+      <url>http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>Patrick Dougherty</name>
+      <email>patrick.doc@ameritech.net</email>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:git@github.com:patrickdoc/auto-cluster-maven-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:patrickdoc/auto-cluster-maven-plugin.git</developerConnection>
+    <url>https://github.com/patrickdoc/auto-cluster-maven-plugin</url>
+  </scm>
+
+  <issueManagement>
+    <url>https://github.com/classgraph/classgraph/issues</url>
+  </issueManagement>
 
   <prerequisites>
     <maven>${maven.version}</maven>
@@ -177,6 +205,9 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
             <version>2.9.1</version>
+            <configuration>
+                <source>1.8</source>
+            </configuration>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
