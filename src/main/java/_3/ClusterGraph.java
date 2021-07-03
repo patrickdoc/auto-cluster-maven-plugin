@@ -64,7 +64,7 @@ public class ClusterGraph extends AbstractMojo {
             FileCluster fileClust = FileCluster.fromHclust(hClust);
             fileClust.writeFiles(dryRun);
         } catch (Exception e) {
-            throw new MojoFailureException("Error in clustering");
+            throw new MojoFailureException("Error in clustering", e);
         }
     }
 }
