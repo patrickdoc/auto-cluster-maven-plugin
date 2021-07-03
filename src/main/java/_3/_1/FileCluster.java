@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.nio.file.CopyOption;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
@@ -53,13 +54,7 @@ public class FileCluster {
 
         if (!dryRun) {
             // Delete all java files and empty directories from source
-            Files.walk(Paths.get(sourceDir))
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach((f) -> {
-                    if (f.getName().endsWith(".java")) {
-                        f.delete();
-                    }});
+            removeJavaFiles(Paths.get(sourceDir));
 
             // Move new structure over
             moveFolder(destPath, Paths.get(sourceDir), StandardCopyOption.REPLACE_EXISTING);
@@ -105,6 +100,35 @@ public class FileCluster {
         });
     }
 
+    public void removeJavaFiles(Path source) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc)
+                    throws IOException {
+                if (exc != null) {
+                    throw exc;
+                }
+
+                try {
+                    Files.delete(dir);
+                } catch (DirectoryNotEmptyException e) {
+                    // Don't do anything if the directory contains non-Java files
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
+                    throws IOException {
+                if (file.getFileName().toString().endsWith(".java")) {
+                    Files.delete(file);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
 
     private void writeTree(BinaryTree tree, String sourceDirectory, String destDirectory, int lastValue) throws IOException {
         if (tree.name != null) {
@@ -136,7 +160,7 @@ public class FileCluster {
             if (tree.value == 0 || tree.value == lastValue) {
                 newDirectory = destDirectory;
             } else {
-                newDirectory = destDirectory + "/" + Integer.toString(tree.value);
+                newDirectory = destDirectory + "/_" + Integer.toString(tree.value);
                 Files.createDirectories(Paths.get(newDirectory));
             }
             writeTree(tree.left, sourceDirectory, newDirectory, tree.value);
@@ -147,7 +171,7 @@ public class FileCluster {
     private static BinaryTree treeBuilder(Hclust.Triplet[] dendrogram, Map<Integer, String> labels, int dendIx) {
         if (dendIx < labels.size()) {
             // File
-            return new BinaryTree(dendIx, labels.get(dendIx)); 
+            return new BinaryTree(dendIx, labels.get(dendIx));
         } else {
             // Directory
             int index = dendIx - labels.size();
