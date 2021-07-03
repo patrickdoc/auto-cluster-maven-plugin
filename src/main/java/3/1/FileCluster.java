@@ -41,6 +41,9 @@ public class FileCluster {
     }
 
     public void writeFiles(boolean dryRun) throws IOException {
+        // Delete any existing temp folders
+        removeFolder(Paths.get("src/main/"), "auto-cluster-maven-plugin");
+
         String sourceDir = "src/main/java";
 
         Path destPath = Files.createTempDirectory(Paths.get("src/main"), "auto-cluster-maven-plugin");
@@ -62,10 +65,7 @@ public class FileCluster {
             moveFolder(destPath, Paths.get(sourceDir), StandardCopyOption.REPLACE_EXISTING);
 
             // Delete temp folder
-            Files.walk(destPath)
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+            removeFolder(destPath, "");
         }
     }
 
@@ -83,6 +83,23 @@ public class FileCluster {
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs)
                     throws IOException {
                 Files.move(file, target.resolve(source.relativize(file)), options);
+                return FileVisitResult.CONTINUE;
+            }
+        });
+    }
+
+    public void removeFolder(Path source, String prefix) throws IOException {
+        Files.walkFileTree(source, new SimpleFileVisitor<Path>() {
+
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs)
+                    throws IOException {
+                if (dir.getFileName().toString().startsWith(prefix)) {
+                    Files.walk(dir)
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+                }
                 return FileVisitResult.CONTINUE;
             }
         });
