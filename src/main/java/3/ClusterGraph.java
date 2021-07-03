@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-@Mojo( name = "dot", requiresDependencyResolution = ResolutionScope.TEST )
+@Mojo( name = "cluster", requiresDependencyResolution = ResolutionScope.TEST )
 @Execute(phase = LifecyclePhase.COMPILE)
 public class ClusterGraph extends AbstractMojo {
 
@@ -29,6 +29,9 @@ public class ClusterGraph extends AbstractMojo {
 
     @Parameter( defaultValue = "cluster.dot", property = "outputFile", required = true )
     private String outputFile;
+
+    @Parameter( defaultValue = "true", property = "dryRun", required = true )
+    private boolean dryRun;
 
     public void execute() throws MojoFailureException {
         try {
@@ -59,7 +62,7 @@ public class ClusterGraph extends AbstractMojo {
             DistanceMatrix dists = DistanceMatrix.fromDependencyMatrix(deps);
             Hclust hClust = Hclust.fromDistanceMatrix(dists);
             FileCluster fileClust = FileCluster.fromHclust(hClust);
-            fileClust.writeFiles(false);
+            fileClust.writeFiles(dryRun);
         } catch (Exception e) {
             throw new MojoFailureException("Error in clustering", e);
         }
