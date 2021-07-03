@@ -18,7 +18,7 @@ containing the new structure for review.
 If you use version control and would like to use this structure permanently, you
 can disable the `dryRun` option to overwrite your source files.
 
-> :warning: This will delete your existing files. Please be very careful.
+> :warning: **WARNING**: This will delete your existing files. Please be very careful.
 
 ```bash
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
