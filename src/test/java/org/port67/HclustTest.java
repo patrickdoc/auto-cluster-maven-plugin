@@ -1,4 +1,4 @@
-package org.port67;
+package io.github.patrickdoc;
 
 import org.junit.Rule;
 import static org.junit.Assert.*;
