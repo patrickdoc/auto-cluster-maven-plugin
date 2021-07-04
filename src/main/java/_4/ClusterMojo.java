@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 
 @Mojo( name = "cluster", requiresDependencyResolution = ResolutionScope.TEST )
 @Execute(phase = LifecyclePhase.COMPILE)
-public class ClusterGraph extends AbstractMojo {
+public class ClusterMojo extends AbstractMojo {
 
     @Parameter( defaultValue = "${project}" )
     private MavenProject project;
@@ -35,29 +35,7 @@ public class ClusterGraph extends AbstractMojo {
 
     public void execute() throws MojoFailureException {
         try {
-            getLog().debug("Generating dependency dot file from packages:");
-            for (String s : basePackages) {
-                getLog().debug("- " + s);
-            }
-
-            ClassGraph graph = new ClassGraph();
-            graph.enableAllInfo();
-            graph.acceptPackages(basePackages);
-            graph.enableInterClassDependencies();
-            graph.overrideClasspath(project.getRuntimeClasspathElements().toArray(new String[0]));
-
-            ScanResult result = graph.scan();
-            ClassInfoList infoList = result.getAllClasses()
-                .filter(classInfo -> !classInfo.isInnerClass());
-
-            String graphDot = infoList.generateGraphVizDotFileFromInterClassDependencies();
-
-            Path path = Paths.get(outputFile);
-            byte[] strToBytes = graphDot.getBytes();
-
-            Files.write(path, strToBytes);
-
-            // Full processing
+            DotMojo dot = new DotMojo(project, basePackages, outputFile);
             DependencyMatrix deps = DependencyMatrix.fromDotFile(outputFile);
             DistanceMatrix dists = DistanceMatrix.fromDependencyMatrix(deps);
             Hclust hClust = Hclust.fromDistanceMatrix(dists);
