@@ -41,6 +41,7 @@ public class ClusterMojo extends AbstractMojo {
             Hclust hClust = Hclust.fromDistanceMatrix(dists);
             FileCluster fileClust = FileCluster.fromHclust(hClust);
             fileClust.writeFiles(dryRun);
+            dot.removeDotFile();
         } catch (Exception e) {
             throw new MojoFailureException("Error in clustering", e);
         }

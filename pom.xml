@@ -5,7 +5,7 @@
 
   <groupId>io.github.patrickdoc</groupId>
   <artifactId>auto-cluster-maven-plugin</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.1.1-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
   <name>Auto Cluster Maven Plugin</name>
 
