@@ -37,8 +37,10 @@ public class Hclust {
         }
 
         List<Triplet> result = nnChainCore(n, distances);
-        stableSort(result);
-        List<Triplet> labelled = label(result);
+        //stableSort(result);
+        // Currently not using this optimization
+        //List<Triplet> labelled = label(result);
+        List<Triplet> labelled = result;
 
         Map<Integer, String> labels = new HashMap<>();
         for (Map.Entry<String, Integer> e : distanceMatrix.nodeIds.entrySet()) {
@@ -57,8 +59,10 @@ public class Hclust {
         int n = input.size() + 1;
         UnionFind u = new UnionFind(n);
         for (Triplet t : input) {
-            result.add(new Triplet(u.find(t.a), u.find(t.b), t.distance));
-            u.union(t.a, t.b);
+            int normalizedA = t.a + n;
+            int normalizedB = t.b + n;
+            result.add(new Triplet(u.find(normalizedA), u.find(normalizedB), t.distance));
+            u.union(normalizedA, normalizedB);
         }
         return result;
     }
@@ -73,90 +77,95 @@ public class Hclust {
             S.add(counter);
             size.put(counter, 1);
         }
-        counter--;
 
-        Integer[] chain = new Integer[counter];
+        Integer[] chain = new Integer[n];
         int chainIx = 0;
 
-        int a, b, c;
+        int idx1, idx2, c;
         int min;
         while (S.size() > 1) {
             if (chainIx <= 3) {
-                a = S.first();
-                chain[0] = a;
+                idx1 = S.first();
+                chain[0] = idx1;
                 chainIx = 1;
 
-                b = S.tailSet(a, false).first();
-                min = distances.get(new Pair(a, b));
-                for (Integer i : S.tailSet(b, false)) {
-                    int dist = distances.get(new Pair(a, i));
+                idx2 = S.tailSet(idx1, false).first();
+                min = distances.get(new Pair(idx1, idx2));
+                int tailVal = idx2;
+                for (Integer i : S.tailSet(tailVal, false)) {
+                    int dist = distances.get(new Pair(idx1, i));
                     if (dist < min) {
                         min = dist;
-                        b = i;
+                        idx2 = i;
                     }
                 }
             } else {
                 chainIx -= 3;
-                a = chain[chainIx - 1];
-                b = chain[chainIx];
-                min = distances.get(a < b ? new Pair(a, b) : new Pair(b, a));
+                idx1 = chain[chainIx - 1];
+                idx2 = chain[chainIx];
+                min = distances.get(idx1 < idx2 ? new Pair(idx1, idx2) : new Pair(idx2, idx1));
             }
 
             do {
-                chain[chainIx] = b;
+                chain[chainIx] = idx2;
     
-                for (Integer i : S.headSet(b, false)) {
-                    int dist = distances.get(new Pair(i, b));
+                for (Integer i : S.headSet(idx2, false)) {
+                    int dist = distances.get(new Pair(i, idx2));
                     if (dist < min) {
                         min = dist;
-                        a = i;
+                        idx1 = i;
                     }
                 }
-                for (Integer i : S.tailSet(b, false)) {
-                    int dist = distances.get(new Pair(b, i));
+                for (Integer i : S.tailSet(idx2, false)) {
+                    int dist = distances.get(new Pair(idx2, i));
                     if (dist < min) {
                         min = dist;
-                        a = i;
+                        idx1 = i;
                     }
                 }
-                b = a;
-                a = chain[chainIx++];
-            } while (b != chain[chainIx - 2]);
-    
-            Triplet t = new Triplet(a, b, min);
+
+                idx2 = idx1;
+                idx1 = chain[chainIx++];
+            } while (idx2 != chain[chainIx - 2]);
+
+            Triplet t = new Triplet(idx1 - n, idx2 - n, min);
             result.add(t);
+
+            S.remove((Integer) idx1);
+            S.remove((Integer) idx2);
+
+            size.put(counter, size.get(idx1) + size.get(idx2));
     
-            S.remove((Integer) a);
-            S.remove((Integer) b);
-    
-            counter++;
-            size.put(counter, size.get(a) + size.get(b));
-    
-            // a must be < b here
-            if (a > b) {
-                int tmp = a;
-                a = b;
-                b = tmp;
+            // idx1 must be < idx2 here
+            if (idx1 > idx2) {
+                int tmp = idx1;
+                idx1 = idx2;
+                idx2 = tmp;
             }
     
-            for (Integer i : S.headSet(a, false)) {
-                distances.put(new Pair(i, counter), method(distances.get(new Pair(i, a)), distances.get(new Pair(i, b))));
+            Integer newVal;
+            for (Integer i : S.headSet(idx1, false)) {
+                newVal = method(distances.get(new Pair(i, idx1)), distances.get(new Pair(i, idx2)));
+                distances.put(new Pair(i, counter), newVal);
             }
-            for (Integer i : S.subSet(a, false, b, false)) {
-                distances.put(new Pair(i, counter), method(distances.get(new Pair(a, i)), distances.get(new Pair(i, b))));
+            for (Integer i : S.subSet(idx1, false, idx2, false)) {
+                newVal = method(distances.get(new Pair(idx1, i)), distances.get(new Pair(i, idx2)));
+                distances.put(new Pair(i, counter), newVal);
             }
-            for (Integer i : S.tailSet(b, false)) {
-                distances.put(new Pair(i, counter), method(distances.get(new Pair(a, i)), distances.get(new Pair(b, i))));
+            for (Integer i : S.tailSet(idx2, false)) {
+                newVal = method(distances.get(new Pair(idx1, i)), distances.get(new Pair(idx2, i)));
+                distances.put(new Pair(i, counter), newVal);
             }
-    
+
             S.add(counter);
+            counter++;
         }
 
         return result;
     }
 
     public static int method(Integer a, Integer b) {
-        return a < b ? a : b;
+        return a > b ? a : b;
     }
 
     public static class Pair {

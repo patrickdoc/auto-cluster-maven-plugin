@@ -36,7 +36,7 @@ public class FileCluster {
 
         Hclust.Triplet[] dendrogram = cluster.dendrogram.toArray(new Hclust.Triplet[0]);
 
-        return new FileCluster(treeBuilder(dendrogram, cluster.nodeLabels, cluster.dendrogram.size() + cluster.nodeLabels.size() - 1),
+        return new FileCluster(treeBuilder(dendrogram, cluster.nodeLabels, cluster.dendrogram.size() - 1),
                                cluster.nodeLabels);
 
     }
@@ -130,10 +130,10 @@ public class FileCluster {
     }
 
 
-    private void writeTree(BinaryTree tree, String sourceDirectory, String destDirectory, int lastValue) throws IOException {
-        if (tree.name != null) {
+    private void writeTree(BinaryTree sourceTree, String sourceDirectory, String destDirectory, int lastValue) throws IOException {
+        if (sourceTree.name != null) {
             // File
-            String path = tree.name.replaceAll("\\.", "/");
+            String path = sourceTree.name.replaceAll("\\.", "/");
             path += ".java";
             String classFileName = path.substring(path.lastIndexOf("/") + 1);
 
@@ -157,28 +157,27 @@ public class FileCluster {
         } else {
             // Directory
             String newDirectory;
-            if (tree.value == 0 || tree.value == lastValue) {
+            if (sourceTree.value == lastValue) {
                 newDirectory = destDirectory;
             } else {
-                newDirectory = destDirectory + "/_" + Integer.toString(tree.value);
+                newDirectory = destDirectory + "/_" + Integer.toString(sourceTree.value);
                 Files.createDirectories(Paths.get(newDirectory));
             }
-            writeTree(tree.left, sourceDirectory, newDirectory, tree.value);
-            writeTree(tree.right, sourceDirectory, newDirectory, tree.value);
+            writeTree(sourceTree.left, sourceDirectory, newDirectory, sourceTree.value);
+            writeTree(sourceTree.right, sourceDirectory, newDirectory, sourceTree.value);
         }
     }
 
     private static BinaryTree treeBuilder(Hclust.Triplet[] dendrogram, Map<Integer, String> labels, int dendIx) {
-        if (dendIx < labels.size()) {
+        if (dendIx < 0) {
             // File
-            return new BinaryTree(dendIx, labels.get(dendIx));
+            return new BinaryTree(dendIx, labels.get(dendIx + labels.size()));
         } else {
             // Directory
-            int index = dendIx - labels.size();
-            BinaryTree result = new BinaryTree(dendrogram[index].distance);
-            BinaryTree left = treeBuilder(dendrogram, labels, dendrogram[index].a);
+            BinaryTree result = new BinaryTree(dendrogram[dendIx].distance);
+            BinaryTree left = treeBuilder(dendrogram, labels, dendrogram[dendIx].a);
             result.setLeft(left);
-            BinaryTree right = treeBuilder(dendrogram, labels, dendrogram[index].b);
+            BinaryTree right = treeBuilder(dendrogram, labels, dendrogram[dendIx].b);
             result.setRight(right);
             return result;
         }

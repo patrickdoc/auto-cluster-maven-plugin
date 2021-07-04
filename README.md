@@ -24,6 +24,9 @@ can disable the `dryRun` option to overwrite your source files.
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
 ```
 
+## Example
+
+
 ## Why?
 
 I think dependencies are an under-examined aspect of code and we can do a lot

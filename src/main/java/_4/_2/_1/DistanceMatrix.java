@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class DistanceMatrix {
 
-    protected Map<String, Integer> nodeIds;
-    protected int[][] distances;
+    public Map<String, Integer> nodeIds;
+    public int[][] distances;
 
     public DistanceMatrix() {
     }

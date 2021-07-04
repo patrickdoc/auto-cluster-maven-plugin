@@ -22,8 +22,8 @@ public class FileClusterTest {
         nodeLabels.put(2, "c");
 
         List<Hclust.Triplet> dendrogram = new ArrayList<>();
-        dendrogram.add(new Hclust.Triplet(2, 0, 0));
-        dendrogram.add(new Hclust.Triplet(3, 1, 2));
+        dendrogram.add(new Hclust.Triplet(-1, -3, 0));
+        dendrogram.add(new Hclust.Triplet(0, -2, 2));
 
         Hclust input = new Hclust(dendrogram, nodeLabels);
 
@@ -33,11 +33,11 @@ public class FileClusterTest {
         FileCluster.BinaryTree expected = new FileCluster.BinaryTree(2);
 
         FileCluster.BinaryTree leftCluster = new FileCluster.BinaryTree(0);
-        leftCluster.setLeft(new FileCluster.BinaryTree(2, "c"));
-        leftCluster.setRight(new FileCluster.BinaryTree(0, "a"));
+        leftCluster.setLeft(new FileCluster.BinaryTree(-1, "c"));
+        leftCluster.setRight(new FileCluster.BinaryTree(-3, "a"));
         expected.setLeft(leftCluster);
 
-        FileCluster.BinaryTree rightCluster = new FileCluster.BinaryTree(1, "b");
+        FileCluster.BinaryTree rightCluster = new FileCluster.BinaryTree(-2, "b");
         expected.setRight(rightCluster);
 
         System.out.println("expected:");

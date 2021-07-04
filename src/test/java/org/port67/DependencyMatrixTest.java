@@ -15,9 +15,9 @@ public class DependencyMatrixTest {
         assertTrue(3 == graph.nodeIds.size());
         logDependencyMatrix(graph);
         int[][] expected = new int[][]
-            {{1, 0, 0}
-            ,{1, 1, 1}
-            ,{0, 0, 1}};
+            {{0, 0, 0}
+            ,{1, 0, 1}
+            ,{0, 0, 0}};
         assertTrue(Arrays.deepEquals(expected, graph.dependencies));
 
     }
