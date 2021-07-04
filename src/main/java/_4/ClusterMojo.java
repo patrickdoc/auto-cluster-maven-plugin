@@ -36,6 +36,7 @@ public class ClusterMojo extends AbstractMojo {
     public void execute() throws MojoFailureException {
         try {
             DotMojo dot = new DotMojo(project, basePackages, outputFile);
+            dot.execute();
             DependencyMatrix deps = DependencyMatrix.fromDotFile(outputFile);
             DistanceMatrix dists = DistanceMatrix.fromDependencyMatrix(deps);
             Hclust hClust = Hclust.fromDistanceMatrix(dists);

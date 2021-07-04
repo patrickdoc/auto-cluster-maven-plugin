@@ -29,7 +29,7 @@ public class DotMojo extends AbstractMojo {
     @Parameter( defaultValue = "${project.groupId}", property = "basePackages", required = true )
     private String[] basePackages;
 
-    @Parameter( defaultValue = "", property = "outputFile", required = true )
+    @Parameter( defaultValue = "cluster.dot", property = "outputFile", required = true )
     private String outputFile;
 
     public DotMojo(MavenProject project, String[] basePackages, String outputFile) {
@@ -40,11 +40,6 @@ public class DotMojo extends AbstractMojo {
 
     public void execute() throws MojoFailureException {
         try {
-            getLog().debug("Generating dependency dot file from packages:");
-            for (String s : basePackages) {
-                getLog().debug("- " + s);
-            }
-
             ClassGraph graph = new ClassGraph();
             graph.enableAllInfo();
             graph.acceptPackages(basePackages);
