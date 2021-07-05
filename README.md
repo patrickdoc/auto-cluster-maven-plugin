@@ -24,9 +24,6 @@ can disable the `dryRun` option to overwrite your source files.
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
 ```
 
-## Example
-
-
 ## Why?
 
 I think dependencies are an under-examined aspect of code and we can do a lot
@@ -52,6 +49,15 @@ better starting point than "I don't like X".
 
 For a longer form dev log and discussion, see
 [here](https://patrickdoc.github.io/dependencies.html).
+
+## Example
+
+Running a dry run in the ClassGraph repo, you can see a side by side comparison:
+[[https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph.png]]
+and the auto-clustered
+[[https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph-cluster.png]]
+
+You can also browse the files in [this fork](https://github.com/patrickdoc/classgraph/tree/clustered/src/main).
 
 ## Acknowledgements and References
 
