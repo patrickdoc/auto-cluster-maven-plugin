@@ -1,8 +1,7 @@
 # auto-cluster-maven-plugin
 
-auto-cluster-maven-plugin is a Maven plugin that extracts Java dependency
-information, runs a hierarchical clustering algorithm, and then organizes your
-source files accordingly.
+Extract Java dependency information, run a hierarchical clustering algorithm,
+organize your code.
 
 ## Usage
 
@@ -14,7 +13,8 @@ mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster
 
 To delete your existing structure and fully embrace the plugin
 
-> :warning: **WARNING**: This will delete your existing files. Please be very careful, and also use version control.
+> :warning: **WARNING**: This will delete your existing files. Please be very
+> careful, and also use version control.
 
 ```bash
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
@@ -48,13 +48,19 @@ For a longer form dev log and discussion, see
 
 ## Example
 
-The ClassGraph repo is as good an example of any of medium sized project with non-zero complexity in the code. So I've used it as an example here. Note, this is not a criticism of the existing structure. In fact, I'm quite pleased that the plugin reproduces some of the existing structure.
+The ClassGraph repo is as good an example of any of medium sized project with
+non-zero complexity in the code. So I've used it as an example here. Note, this
+is not a criticism of the existing structure. In fact, I'm quite pleased that
+the plugin reproduces some of the existing structure.
 
-Running a dry run in the ClassGraph repo, you can see a side by side comparison of the original repo:
-<img alt="Original ClassGraph source" src="https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph.png">
+Running a dry run in the ClassGraph repo, you can see a side by side comparison
+of the original repo:
+<img alt="Original ClassGraph source"
+src="https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph.png">
 
 and the clustered code:
-<img alt="Clustered ClassGraph source" src="https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph-cluster.png">
+<img alt="Clustered ClassGraph source"
+src="https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph-cluster.png">
 
 You can also browse the files in [this fork](https://github.com/patrickdoc/classgraph/tree/clustered/src/main).
 
