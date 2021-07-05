@@ -6,19 +6,15 @@ source files accordingly.
 
 ## Usage
 
-To run this plugin,
+To generate a dry-run folder: `src/main/auto-cluster-maven-plugin1234...`
 
 ```bash
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster
 ```
 
-This will generate a folder `src/main/auto-cluster-maven-plugin1234...`
-containing the new structure for review.
+To delete your existing structure and fully embrace the plugin
 
-If you use version control and would like to use this structure permanently, you
-can disable the `dryRun` option to overwrite your source files.
-
-> :warning: **WARNING**: This will delete your existing files. Please be very careful.
+> :warning: **WARNING**: This will delete your existing files. Please be very careful, and also use version control.
 
 ```bash
 mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
@@ -29,14 +25,14 @@ mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DdryRun=false
 I think dependencies are an under-examined aspect of code and we can do a lot
 more with them.
 
-This plugin has two goals.
+This plugin has two goals:
 
-First, for individual projects, the goal is to make
+- For individual projects, the goal is to make
 the internal dependency structure easy to analyze. By putting it front and
 center, you will hopefully be able to identify and resolve potential structural
 issues in your code.
 
-Second, on a larger scale, the goal is to provide a language for talking about
+- For the general community, the goal is to provide a language for talking about
 code organization and style.
 
 I don't like organizing interfaces into an `inf` package or enums into an `enum`
