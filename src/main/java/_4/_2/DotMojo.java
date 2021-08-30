@@ -32,12 +32,6 @@ public class DotMojo extends AbstractMojo {
     @Parameter( defaultValue = "cluster.dot", property = "outputFile", required = true )
     private String outputFile;
 
-    public DotMojo(MavenProject project, String[] basePackages, String outputFile) {
-        this.project = project;
-        this.basePackages = basePackages;
-        this.outputFile = outputFile;
-    }
-
     public void execute() throws MojoFailureException {
         try {
             ClassGraph graph = new ClassGraph();
@@ -63,5 +57,17 @@ public class DotMojo extends AbstractMojo {
 
     public void removeDotFile() throws IOException {
         Files.delete(Paths.get(outputFile));
+    }
+
+    public void setProject(MavenProject project) {
+        this.project = project;
+    }
+
+    public void setBasePackages(String[] basePackages) {
+        this.basePackages = basePackages;
+    }
+
+    public void setOutputFile(String outputFile) {
+        this.outputFile = outputFile;
     }
 }
