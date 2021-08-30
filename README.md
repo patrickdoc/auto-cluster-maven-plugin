@@ -53,8 +53,14 @@ non-zero complexity in the code. So I've used it as an example here. Note, this
 is not a criticism of the existing structure. In fact, I'm quite pleased that
 the plugin reproduces some of the existing structure.
 
-Running a dry run in the ClassGraph repo, you can see a side by side comparison
-of the original repo:
+Running a dry run in the ClassGraph repo (with a parameter to handle multiple base packages):
+
+```bash
+mvn io.github.patrickdoc:auto-cluster-maven-plugin:cluster -DbasePackages=io.github.classgraph,nonapi.io.github.classgraph
+```
+
+You can see a side by side comparison of the original repo:
+
 <img alt="Original ClassGraph source"
 src="https://github.com/patrickdoc/auto-cluster-maven-plugin/blob/master/imgs/classgraph.png">
 
